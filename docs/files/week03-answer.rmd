@@ -1,0 +1,78 @@
+---
+title: "統計学特論第3回課題"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+date: "2023-04-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 課題
+Animals.csv(Sourceを改変)のデータについて、次の問いに答えてください。
+
+Source: P. J. Rousseeuw and A. M. Leroy (1987) Robust Regression and Outlier Detection. Wiley, p. 57.
+
+# 1. Bodyの最大値とそれが何の動物か答えてください。
+
+データの読み込みと確認
+```{r read.csv}
+animals<-read.csv("https://raw.githubusercontent.com/aonoa68/Rdata/main/Animals.csv",header=T,row.names=1)
+head(animals)
+```
+```{r}
+summary(animals)
+```
+これでanimalsが28行3列のデータで、bodyの最大値は87000.00であることがわかる。
+
+28行しかないので全てのデータを表示する。
+```{r}
+animals
+```
+Brachiosaurusがbodyの最大値87000.000を取ることがわかる。
+
+# 2. BodyとBrainの標準偏差ではどちらが大きいでしょうか？数値を求めた上で答えてください。
+
+```{r}
+sd(animals$body)
+sd(animals$brain)
+```
+
+Body16480.49, Brain1334.929のため、bodyの方が標準偏差が大きい。
+
+# 3. BodyとBrainの対数値についての散布図を描き、BodyとBrainの間にどのような関係があるか考察してください。
+
+デフォルトであるbaseパッケージのplotを使う場合
+```{r}
+plot(log(animals$body), log(animals$brain), main = "body & brain", xlab = "body (kg)", ylab = "brain (g)", col=as.factor(animals$order), pch=19)
+```
+
+```{r base}
+plot(log(animals$body), log(animals$brain), main = "body & brain", xlab = "body (kg)", ylab = "brain (g)", col=as.factor(animals$order), pch=19)
+text(log(animals$body), log(animals$brain), labels=rownames(animals))
+```
+
+
+ggplot2を使う場合
+```{r}
+library(ggplot2)
+ggplot(data = animals, aes(x = log(body), y = log(brain), color = order)) +
+  geom_point() +
+  labs(title = "Scatterplot of body and brain",
+       x = "body(kg)", y = "brain(g)",
+       color = "order")
+```
+
+```{r goolot2}
+library(ggplot2)
+ggplot(data = animals, aes(x = log(body), y = log(brain), color = order)) +
+  geom_point() +
+  labs(title = "Scatterplot of body and brain",
+       x = "body(kg)", y = "brain(g)",
+       color = "order")+geom_text(aes(label = rownames(animals)))
+```
+
+bodyとbrainの間に間に正の相関関係があると考えられる。細かくみていくと、ヒトを含むPrimates(霊長類)は体に比して脳が重い。一方、Dinasouriaである恐竜は、他の哺乳類とは明らかに傾向が異なり、bodyに比べてbrainが著しく軽い。

@@ -1,0 +1,75 @@
+site_name: 統計学特論
+site_description: 立教大学「統計学特論」2025年度 授業資料（過去の担当授業）
+site_author: 小野原 彩香
+site_url: https://aonoa68.github.io/toukei-tokuron/
+repo_url: https://github.com/aonoa68/toukei-tokuron
+repo_name: aonoa68/toukei-tokuron
+
+theme:
+  name: material
+  language: ja
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/weather-night
+        name: ダークモードに切り替え
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: ライトモードに切り替え
+  features:
+    - navigation.tracking
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      lang:
+        - ja
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - toc:
+      permalink: true
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - ホーム: index.md
+  - 各回の資料:
+      - "第1回 社会と統計（ガイダンス）": week01.md
+      - "第2回 RやPythonの基礎": week02.md
+      - "第3回 1変数データの要約（1）": week03.md
+      - "第4回 1変数データの要約（2）": week04.md
+      - "第5回 2変数データの要約（1）": week05.md
+      - "第6回 2変数データの要約（2）": week06.md
+      - "第7回 確率変数（離散型確率変数）": week07.md
+      - "第8回 確率変数（連続型確率変数）": week08.md
+      - "第9回 統計的推測の基礎（母集団と標本）": week09.md
+      - "第10回 区間推定（母平均の区間推定）": week10.md
+      - "第11回 区間推定（母比率の区間推定）": week11.md
+      - "第12回 仮説検定の発想": week12.md
+      - "第14回 母平均の差の検定": week14.md
+  - 担当授業の一覧（Teaching）: https://aonoa68.github.io/teaching/
+
+copyright: © 小野原 彩香 — 立教大学「統計学特論」（2023〜2025年度）
