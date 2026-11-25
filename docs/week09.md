@@ -7,4 +7,6 @@
 
 ## 解説動画
 
-<a class="video-card" href="https://www.youtube.com/watch?v=FkE9330PwTo" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/FkE9330PwTo/hqdefault.jpg" alt="" loading="lazy"><span><strong>母集団と標本</strong><small>YouTube で再生する（新しいタブで開きます）</small></span></a>
+<div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/FkE9330PwTo" title="母集団と標本" loading="lazy" allowfullscreen allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+
+[YouTube で見る：母集団と標本](https://www.youtube.com/watch?v=FkE9330PwTo)

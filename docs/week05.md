@@ -7,4 +7,6 @@
 
 ## 解説動画
 
-<a class="video-card" href="https://www.youtube.com/watch?v=SxnhilGWUnE" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/SxnhilGWUnE/hqdefault.jpg" alt="" loading="lazy"><span><strong>2変数データの要約1</strong><small>YouTube で再生する（新しいタブで開きます）</small></span></a>
+<div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/SxnhilGWUnE" title="2変数データの要約1" loading="lazy" allowfullscreen allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+
+[YouTube で見る：2変数データの要約1](https://www.youtube.com/watch?v=SxnhilGWUnE)

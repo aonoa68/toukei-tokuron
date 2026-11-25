@@ -7,7 +7,9 @@
 
 ## 解説動画
 
-<a class="video-card" href="https://www.youtube.com/watch?v=VfgqcG1R5H0" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/VfgqcG1R5H0/hqdefault.jpg" alt="" loading="lazy"><span><strong>1変数データの要約1</strong><small>YouTube で再生する（新しいタブで開きます）</small></span></a>
+<div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/VfgqcG1R5H0" title="1変数データの要約1" loading="lazy" allowfullscreen allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+
+[YouTube で見る：1変数データの要約1](https://www.youtube.com/watch?v=VfgqcG1R5H0)
 
 ## 資料
 

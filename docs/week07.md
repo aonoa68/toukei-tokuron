@@ -7,7 +7,9 @@
 
 ## 解説動画
 
-<a class="video-card" href="https://www.youtube.com/watch?v=IJIuOnq2P2U" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/IJIuOnq2P2U/hqdefault.jpg" alt="" loading="lazy"><span><strong>離散型確率変数</strong><small>YouTube で再生する（新しいタブで開きます）</small></span></a>
+<div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/IJIuOnq2P2U" title="離散型確率変数" loading="lazy" allowfullscreen allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+
+[YouTube で見る：離散型確率変数](https://www.youtube.com/watch?v=IJIuOnq2P2U)
 
 ## 資料
 

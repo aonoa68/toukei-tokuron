@@ -7,4 +7,6 @@
 
 ## 解説動画
 
-<a class="video-card" href="https://www.youtube.com/watch?v=fR9lmPQg11E" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/fR9lmPQg11E/hqdefault.jpg" alt="" loading="lazy"><span><strong>回帰分析</strong><small>YouTube で再生する（新しいタブで開きます）</small></span></a>
+<div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/fR9lmPQg11E" title="回帰分析" loading="lazy" allowfullscreen allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+
+[YouTube で見る：回帰分析](https://www.youtube.com/watch?v=fR9lmPQg11E)

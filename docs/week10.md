@@ -7,4 +7,6 @@
 
 ## 解説動画
 
-<a class="video-card" href="https://www.youtube.com/watch?v=9YyjbO_ElYE" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/9YyjbO_ElYE/hqdefault.jpg" alt="" loading="lazy"><span><strong>母平均の区間推定</strong><small>YouTube で再生する（新しいタブで開きます）</small></span></a>
+<div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/9YyjbO_ElYE" title="母平均の区間推定" loading="lazy" allowfullscreen allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>
+
+[YouTube で見る：母平均の区間推定](https://www.youtube.com/watch?v=9YyjbO_ElYE)
