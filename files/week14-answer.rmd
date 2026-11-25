@@ -1,0 +1,198 @@
+---
+title: "統計学特論 第14回課題：模範解答（R版）"
+author: "ChatGPT（自動生成）"
+date: "2025-08-08"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    df_print: paged
+    code_folding: show
+lang: ja
+---
+
+# 概要
+
+本ドキュメントは「第14回課題（2標本比較）」の**模範解答**を、Rコードと日本語の解釈つきで示します。  
+例題は **(1) 平均差（Welchのt検定）**, **(2) 分散比（F検定）**, **(3) 比率差（2標本z検定＋2×2表解析）** の3本立てです。
+
+- 依存パッケージ：基本的に不要（*任意*で `DescTools` を使うと比率差CIをスコア法で算出可能）
+- 前提：独立標本、近似正規性（平均の検定）、十分な期待度数（カイ二乗）など
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 4
+)
+fmt_p <- function(p) if (p < 1e-3) "< .001" else sprintf("= %.4f", p)
+label_d <- function(d){ ad <- abs(d); if (ad < 0.2) "ごく小" else if (ad < 0.5) "小" else if (ad < 0.8) "中" else "大" }
+```
+
+# データ（資料の数値を想定）
+
+```{r data}
+# 例題1・2（平均/分散）：群A/Bの要約統計
+A_mean <- 168.1; A_var <- 8.8;  nA <- 10
+B_mean <- 164.3; B_var <- 10.1; nB <- 8
+
+# 例題3（比率）：男/女の成功数と試行数
+a <- 58; nM <- 98      # 男の成功数/試行数
+c_ <- 28; nF <- 71     # 女の成功数/試行数
+b <- nM - a; d <- nF - c_
+```
+
+> **メモ**：単位や文脈（身長・点数・合格率など）は課題本文に従って解釈してください。
+
+# 例題1：母平均の差（Welchのt検定・推奨）
+
+```{r mean-test}
+alpha <- 0.05
+sA <- sqrt(A_var); sB <- sqrt(B_var)
+diff <- A_mean - B_mean
+
+# WelchのSEと自由度
+se_welch <- sqrt(sA^2/nA + sB^2/nB)
+df_welch <- (sA^2/nA + sB^2/nB)^2 / ((sA^2/nA)^2/(nA-1) + (sB^2/nB)^2/(nB-1))
+t_stat <- diff / se_welch
+p_t <- 2 * (1 - pt(abs(t_stat), df = df_welch))
+tcrit <- qt(1 - alpha/2, df_welch)
+ci_t <- c(diff - tcrit*se_welch, diff + tcrit*se_welch)
+
+# 等分散版（併記用）
+sp2 <- ((nA-1)*A_var + (nB-1)*B_var) / (nA + nB - 2)
+sp  <- sqrt(sp2)
+se_eq <- sp * sqrt(1/nA + 1/nB)
+t_eq <- diff / se_eq
+df_eq <- nA + nB - 2
+p_eq <- 2 * (1 - pt(abs(t_eq), df = df_eq))
+tcrit_eq <- qt(1 - alpha/2, df_eq)
+ci_eq <- c(diff - tcrit_eq*se_eq, diff + tcrit_eq*se_eq)
+
+# 効果量
+d_val <- diff / sp
+J <- 1 - 3 / (4*(nA+nB) - 9)
+g_val <- J * d_val
+
+cat("【結果】\n")
+cat(sprintf("Welchのt(%.2f)=%.3f, p %s\n", df_welch, t_stat, fmt_p(p_t)))
+cat(sprintf("差(A−B)=%.3f, 95%%CI=[%.3f, %.3f]\n", diff, ci_t[1], ci_t[2]))
+cat(sprintf("効果量 d=%.3f（%s）, g=%.3f\n\n", d_val, label_d(d_val), g_val))
+
+cat("【解釈】\n")
+if (p_t < alpha) {
+  direction <- if (diff > 0) "A群の平均がB群より有意に大きい" else "A群の平均がB群より有意に小さい"
+  cat(sprintf("- 有意差あり（%s）。\n", direction))
+} else {
+  cat("- 有意差は認められない（平均は統計的に同等とみなす）。\n")
+}
+cat(sprintf("- 差の95%%CIは %.2f〜%.2f（0を%s）。\n",
+            ci_t[1], ci_t[2], if (ci_t[1]*ci_t[2] > 0) "含まない" else "含む"))
+cat("- 効果量gの大きさラベルに基づき、実務上の意味合いも検討。\n")
+cat("- 前提：独立性、各群の近似正規性。外れ値が強い場合は頑健性に注意。\n\n")
+
+cat("[参考] 等分散t: ",
+    sprintf("t(%d)=%.3f, p %s, 95%%CI=[%.3f, %.3f]\n", df_eq, t_eq, fmt_p(p_eq), ci_eq[1], ci_eq[2]))
+```
+
+# 例題2：母分散の差（F検定・二側）
+
+```{r var-test}
+F_val <- A_var / B_var
+df1 <- nA - 1; df2 <- nB - 1
+p_f <- 2 * (1 - pf(max(F_val, 1/F_val), df1, df2))
+
+F_lower <- F_val / qf(1 - alpha/2, df1, df2)
+F_upper <- F_val / qf(alpha/2,     df1, df2)
+
+cat("【結果】\n")
+cat(sprintf("F(%d,%d)=%.3f, p %s\n", df1, df2, F_val, fmt_p(p_f)))
+cat(sprintf("分散比 A/B=%.3f, 95%%CI=[%.3f, %.3f]\n\n", F_val, F_lower, F_upper))
+
+cat("【解釈】\n")
+if (p_f < alpha) {
+  cat("- 有意差あり（両群のばらつきは異なる）。\n")
+} else {
+  cat("- 有意差は認められない（ばらつきは統計的に同等とみなせる）。\n")
+}
+cat("- 小標本ではCIが広く不確実性が大きい。平均比較にはWelchのtやLevene/Brown–Forsythe等の頑健法が無難。\n")
+```
+
+# 例題3：母比率の差（2標本z検定＋2×2解析）
+
+```{r prop-test}
+p_m <- a / nM; p_f <- c_ / nF
+diff_p <- p_m - p_f
+
+# 二標本z検定（帰無：p_m = p_f）
+p_pool <- (a + c_) / (nM + nF)
+se_pool <- sqrt(p_pool * (1 - p_pool) * (1/nM + 1/nF))
+z_val <- diff_p / se_pool
+p_z <- 2 * (1 - pnorm(abs(z_val)))
+
+# 差の95%CI：DescToolsがあればscore法
+if (requireNamespace("DescTools", quietly = TRUE)) {
+  ci_diff <- DescTools::BinomDiffCI(a, nM, c_, nF, conf.level = 1 - alpha, method = "score")
+  ci_l <- ci_diff[1]; ci_u <- ci_diff[2]
+  ci_note <- "score法"
+} else {
+  se_unpooled <- sqrt(p_m*(1-p_m)/nM + p_f*(1-p_f)/nF)
+  zcrit <- qnorm(1 - alpha/2)
+  ci_l <- diff_p - zcrit * se_unpooled
+  ci_u <- diff_p + zcrit * se_unpooled
+  ci_note <- "Wald近似"
+}
+
+tab <- matrix(c(a, b, c_, d), nrow = 2, byrow = TRUE)
+colnames(tab) <- c("成功", "失敗"); rownames(tab) <- c("男", "女")
+chisq <- suppressWarnings(chisq.test(tab, correct = FALSE))
+
+OR <- (a * d) / (b * c_)
+se_logOR <- sqrt(1/a + 1/b + 1/c_ + 1/d)
+zcrit <- qnorm(1 - alpha/2)
+OR_ci <- exp(log(OR) + c(-1,1) * zcrit * se_logOR)
+
+p1 <- a / (a + b); p2 <- c_ / (c_ + d)
+RR <- p1 / p2
+se_logRR <- sqrt(1/a - 1/(a+b) + 1/c_ - 1/(c_+d))
+RR_ci <- exp(log(RR) + c(-1,1) * zcrit * se_logRR)
+
+cat("【結果】\n")
+cat(sprintf("男: %d/%d = %.3f (%.1f%%)\n", a, nM, p_m, 100*p_m))
+cat(sprintf("女: %d/%d = %.3f (%.1f%%)\n", c_, nF, p_f, 100*p_f))
+cat(sprintf("差（男−女）= %.3f（%.1fポイント）\n", diff_p, 100*diff_p))
+cat(sprintf("二標本z検定: z=%.3f, p %s\n", z_val, fmt_p(p_z)))
+cat(sprintf("95%%CI[差]（%s）= [%.3f, %.3f]\n", ci_note, ci_l, ci_u))
+cat(sprintf("χ²(%d)=%.3f, p %s\n", unname(chisq$parameter), unname(chisq$statistic), fmt_p(chisq$p.value)))
+cat(sprintf("オッズ比 OR=%.3f, 95%%CI=[%.3f, %.3f]\n", OR, OR_ci[1], OR_ci[2]))
+cat(sprintf("相対リスク RR=%.3f, 95%%CI=[%.3f, %.3f]\n\n", RR, RR_ci[1], RR_ci[2]))
+
+cat("【解釈】\n")
+if (p_z < alpha) {
+  dir <- if (diff_p > 0) "男性の比率が有意に高い" else "女性の比率が有意に高い"
+  cat(sprintf("- 有意差あり（%s）。\n", dir))
+} else {
+  cat("- 有意差なし（男女の比率は統計的に同等）。\n")
+}
+cat(sprintf("- 差の95%%CIは %.3f〜%.3f（0を%s）。\n",
+            ci_l, ci_u, if (ci_l*ci_u > 0) "含まない" else "含む"))
+cat("- 実務解釈：RR>1なら“起こりやすさ”が高い側。説明にはRRやポイント差が直感的。\n")
+cat("- 前提：独立抽出。各セルの期待度数が十分ならχ²近似は妥当。\n")
+```
+
+# まとめ（提出文例）
+
+```{r}
+cat("— 要約 —\n")
+cat(sprintf("平均差（Welch）: t=%.2f, p %s, CI=[%.2f, %.2f], g≈%.2f/%s\n",
+            t_stat, fmt_p(p_t), ci_t[1], ci_t[2], g_val, label_d(g_val)))
+cat(sprintf("分散比: F=%.2f, p %s, CI=[%.2f, %.2f]\n", F_val, fmt_p(p_f), F_lower, F_upper))
+cat(sprintf("比率差: z=%.2f, p %s, 差=%.1fpt, RR=%.2f\n", z_val, fmt_p(p_z), 100*diff_p, RR))
+```
+
+# 付記：RPubsへの公開手順
+
+1. 本 `.Rmd` をRStudioで開く → **Knit** を押してHTMLを生成  
+2. 生成直後に表示されるプレビュー画面右上の **Publish** → **RPubs** を選択  
+3. タイトル・説明を入力して **Publish** で公開  
+4. プラグインが使えない環境なら、`rmarkdown::render("ファイル.Rmd")` でHTMLを生成し、RPubsの「Upload」画面から手動アップロード
